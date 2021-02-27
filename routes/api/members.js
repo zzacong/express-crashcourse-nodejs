@@ -11,13 +11,10 @@ router.get('/', (req, res) => {
 
 // GET SINGLE MEMBER
 router.get('/:id', (req, res) => {
-  // res.send(req.params.id)
-  const found = members.some(member => member.id === parseInt(req.params.id))
-  if (found) {
-    res.json(members.filter(member => member.id === parseInt(req.params.id)))
-  } else {
-    res.status(400).json({ msg: `No member with id ${req.params.id}` })
-  }
+  const member = members.find(member => member.id === parseInt(req.params.id))
+  if (!member)
+    return res.status(400).json({ msg: `No member with id ${req.params.id}` })
+  res.json(member)
 })
 
 // CREATE MEMBER
@@ -55,15 +52,17 @@ router.put('/:id', (req, res) => {
 
 // DELETE MEMBER
 router.delete('/:id', (req, res) => {
-  const found = members.some(member => member.id === parseInt(req.params.id))
-  if (found) {
-    res.json({
-      msg: `Member with id ${req.params.id} deleted`,
-      members: members.filter(member => member.id !== parseInt(req.params.id)),
-    })
-  } else {
-    res.status(400).json({ msg: `No member with id ${req.params.id}` })
-  }
+  const index = members.findIndex(
+    member => member.id === parseInt(req.params.id)
+  )
+  if (index < 0)
+    return res.status(400).json({ msg: `No member with id ${req.params.id}` })
+
+  members.splice(index, 1)
+  res.json({
+    msg: `Member with id ${req.params.id} deleted`,
+    members: members,
+  })
 })
 
 module.exports = router
