@@ -1,0 +1,4 @@
+---
+applications:
+  - name: express-crashcourse-nodejs
+    memory: 128M
